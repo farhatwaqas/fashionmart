@@ -1,0 +1,9 @@
+{
+  "name": "fashion-corner-admin-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fashion Corner storefront with local admin product management.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

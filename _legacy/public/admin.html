@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fashion Corner — Admin</title>
+  <style>
+    :root{
+      --ink:#16231e;--muted:#68736d;--line:#dce7e0;--paper:#fff;
+      --soft:#f3f8f4;--green:#176f4b;--green2:#0f5137;--red:#b42318;
+      --gold:#b77a15;--shadow:0 18px 55px rgba(31,73,53,.13)
+    }
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(145deg,#edf7ef,#fff8ed);
+      color:var(--ink);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    button,input,select{font:inherit}.hidden{display:none!important}
+    .auth-shell{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .auth-card{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;
+      padding:30px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:13px;margin-bottom:24px}
+    .brand-mark{width:50px;height:50px;border-radius:16px;background:var(--green);display:grid;
+      place-items:center;color:#fff;font-size:25px;box-shadow:0 10px 28px rgba(23,111,75,.27)}
+    h1,h2,h3,p{margin-top:0}.auth-card h1{font-size:25px;margin-bottom:7px}.muted{color:var(--muted)}
+    label{display:block;font-weight:700;font-size:13px;margin:15px 0 6px}
+    input,select{width:100%;border:1px solid #cad8cf;border-radius:11px;padding:11px 12px;background:#fff;color:var(--ink);outline:none}
+    input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(23,111,75,.12)}
+    .btn{border:0;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:800;display:inline-flex;
+      align-items:center;justify-content:center;gap:7px;text-decoration:none;transition:.18s}
+    .btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--green);color:#fff}
+    .btn-light{background:#edf5f0;color:var(--green2)}.btn-danger{background:#fff0ef;color:var(--red)}
+    .btn-dark{background:#18231f;color:#fff}.btn-block{width:100%;margin-top:20px}
+    .message{border-radius:10px;padding:10px 12px;margin:12px 0 0;font-size:13px}
+    .message.error{background:#fff0ef;color:var(--red)}.message.ok{background:#eaf8ef;color:#16643f}
+    .app{min-height:100vh}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:30}
+    .topbar .brand{margin:0}.topbar .brand-mark{width:40px;height:40px;border-radius:12px;font-size:20px}
+    .top-actions{display:flex;gap:9px;align-items:center}.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 72px)}
+    aside{padding:24px 15px;background:rgba(255,255,255,.66);border-right:1px solid var(--line)}
+    .nav-btn{width:100%;border:0;background:transparent;text-align:left;padding:12px 14px;border-radius:11px;
+      font-weight:750;color:#52605a;margin-bottom:5px;cursor:pointer}
+    .nav-btn.active{background:#dff0e6;color:var(--green2)}main{padding:28px;min-width:0}
+    .page-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}
+    .page-head h1{font-size:27px;margin-bottom:3px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:22px}
+    .stat,.panel{background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:0 8px 24px rgba(31,73,53,.06)}
+    .stat{padding:18px}.stat b{font-size:27px;display:block;margin-top:4px}.stat span{color:var(--muted);font-size:12px;font-weight:700}
+    .panel{padding:20px}.toolbar{display:flex;gap:10px;margin-bottom:16px}.toolbar input{max-width:420px}
+    .product-list{display:grid;gap:9px}.product-row{display:grid;grid-template-columns:62px minmax(170px,1fr) 150px 110px 155px;
+      align-items:center;gap:12px;border:1px solid var(--line);border-radius:13px;padding:9px;background:#fff}
+    .thumb{width:62px;height:62px;border-radius:10px;object-fit:cover;background:linear-gradient(140deg,#dbece1,#f4dfc8)}
+    .thumb-empty{display:grid;place-items:center;color:#65746c;font-size:20px}
+    .product-name{font-weight:800}.small{font-size:12px;color:var(--muted)}.badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+    .badge{font-size:10px;font-weight:800;padding:3px 7px;border-radius:999px;background:#e6f4ea;color:var(--green2)}
+    .row-actions{display:flex;gap:6px;justify-content:flex-end}.row-actions .btn{padding:8px 10px}
+    .editor-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 13px}
+    .switches{display:flex;gap:18px;margin-top:17px;flex-wrap:wrap}.check{display:flex;align-items:center;gap:8px;font-weight:700}
+    .check input{width:18px;height:18px}.dropzone{border:2px dashed #b8cbbf;border-radius:16px;padding:22px;text-align:center;background:var(--soft);cursor:pointer}
+    .dropzone input{display:none}.image-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+    .image-item{height:92px;border-radius:11px;overflow:hidden;position:relative;background:#edf3ef}.image-item img{width:100%;height:100%;object-fit:cover}
+    .image-item button{position:absolute;right:4px;top:4px;border:0;background:#1f2925d9;color:#fff;border-radius:50%;width:25px;height:25px;cursor:pointer}
+    .editor-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+    .category-list{display:grid;gap:8px;margin-top:17px}.category-row{border:1px solid var(--line);padding:11px 13px;border-radius:11px;display:flex;align-items:center;justify-content:space-between}
+    .category-add{display:grid;grid-template-columns:1fr auto;gap:9px}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .note{background:#f7faf8;border:1px solid var(--line);border-radius:12px;padding:13px;color:#536159;font-size:13px}
+    .empty{text-align:center;padding:45px 20px;color:var(--muted)}
+    .toast{position:fixed;right:20px;bottom:20px;background:#18231f;color:#fff;padding:12px 16px;border-radius:11px;
+      box-shadow:var(--shadow);z-index:100;max-width:340px}.toast.error{background:var(--red)}
+    @media(max-width:980px){.stats{grid-template-columns:1fr 1fr}.editor-grid,.settings-grid{grid-template-columns:1fr}.product-row{grid-template-columns:58px 1fr auto}.product-row>:nth-child(3),.product-row>:nth-child(4){display:none}}
+    @media(max-width:720px){.topbar{padding:0 14px}.topbar .brand div:last-child{display:none}.layout{display:block}aside{display:flex;overflow:auto;padding:9px;border-right:0;border-bottom:1px solid var(--line);position:sticky;top:72px;z-index:20;background:#fff}.nav-btn{width:auto;white-space:nowrap;margin:0 4px 0 0}main{padding:18px 12px}.page-head{align-items:flex-start}.page-head h1{font-size:23px}.stats{gap:9px}.stat{padding:13px}.stat b{font-size:22px}.panel{padding:14px}.field-grid{grid-template-columns:1fr}.product-row{grid-template-columns:52px minmax(0,1fr);position:relative;padding-bottom:49px}.thumb{width:52px;height:52px}.row-actions{position:absolute;bottom:8px;right:8px}.toolbar{flex-direction:column}.image-grid{grid-template-columns:repeat(3,1fr)}.top-actions .username{display:none}}
+  </style>
+</head>
+<body>
+  <section id="authShell" class="auth-shell">
+    <div class="auth-card">
+      <div class="brand"><div class="brand-mark">✦</div><div><b>Fashion Corner</b><div class="small">Store management</div></div></div>
+      <div id="setupView" class="hidden">
+        <h1>Create your admin login</h1>
+        <p class="muted">This is a one-time setup. Choose private login details for managing your store.</p>
+        <form id="setupForm">
+          <label for="setupUser">Admin username</label><input id="setupUser" autocomplete="username" required minlength="3">
+          <label for="setupPass">Password</label><input id="setupPass" type="password" autocomplete="new-password" required minlength="8">
+          <label for="setupConfirm">Confirm password</label><input id="setupConfirm" type="password" autocomplete="new-password" required minlength="8">
+          <div id="setupMessage"></div><button class="btn btn-primary btn-block">Create admin account</button>
+        </form>
+      </div>
+      <div id="loginView" class="hidden">
+        <h1>Welcome back</h1><p class="muted">Log in to add products and update your store.</p>
+        <form id="loginForm">
+          <label for="loginUser">Username</label><input id="loginUser" autocomplete="username" required>
+          <label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password" required>
+          <div id="loginMessage"></div><button class="btn btn-primary btn-block">Log in</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">✦</div><div><b>Fashion Corner</b><div class="small">Admin dashboard</div></div></div>
+      <div class="top-actions"><span class="small username" id="username"></span><a class="btn btn-light" href="/" target="_blank">View store ↗</a><button id="logoutBtn" class="btn btn-dark">Log out</button></div>
+    </header>
+    <div class="layout">
+      <aside>
+        <button class="nav-btn active" data-page="products">Products</button>
+        <button class="nav-btn" data-page="editor">Add product</button>
+        <button class="nav-btn" data-page="categories">Categories</button>
+        <button class="nav-btn" data-page="backup">Backup & security</button>
+      </aside>
+      <main>
+        <section id="page-products" class="page">
+          <div class="page-head"><div><h1>Your products</h1><p class="muted">Manage everything displayed in your online store.</p></div><button class="btn btn-primary" id="addProductTop">＋ Add product</button></div>
+          <div class="stats">
+            <div class="stat"><span>ALL PRODUCTS</span><b id="statProducts">0</b></div>
+            <div class="stat"><span>CATEGORIES</span><b id="statCategories">0</b></div>
+            <div class="stat"><span>HOT SELLING</span><b id="statHot">0</b></div>
+            <div class="stat"><span>YOU MAY ALSO LIKE</span><b id="statSuggested">0</b></div>
+          </div>
+          <div class="panel"><div class="toolbar"><input id="searchProducts" placeholder="Search products…"><select id="filterCategory"><option value="">All categories</option></select></div><div id="productList" class="product-list"></div></div>
+        </section>
+
+        <section id="page-editor" class="page hidden">
+          <div class="page-head"><div><h1 id="editorTitle">Add a product</h1><p class="muted">Upload up to 20 photos and choose where the product appears.</p></div><button class="btn btn-light" data-go="products">← Products</button></div>
+          <form id="productForm" class="panel">
+            <input type="hidden" id="productId">
+            <div class="editor-grid">
+              <div>
+                <div class="field-grid">
+                  <div style="grid-column:1/-1"><label for="productName">Product name *</label><input id="productName" required maxlength="100" placeholder="e.g. Gold Pearl Bracelet"></div>
+                  <div><label for="productCategory">Category *</label><select id="productCategory" required></select></div>
+                  <div><label for="productPrice">Selling price (PKR) *</label><input id="productPrice" type="number" min="0" step="1" required></div>
+                  <div><label for="productOriginalPrice">Original price (optional)</label><input id="productOriginalPrice" type="number" min="0" step="1"></div>
+                </div>
+                <div class="switches">
+                  <label class="check"><input id="productHot" type="checkbox"> Show in Hot Selling</label>
+                  <label class="check"><input id="productSuggested" type="checkbox"> Show in You May Also Like</label>
+                </div>
+                <div class="note" style="margin-top:18px">Tip: the first photo becomes the main product photo. Customers can swipe through all uploaded photos.</div>
+              </div>
+              <div>
+                <label>Product photos *</label>
+                <label class="dropzone" for="productImages"><b>＋ Choose product photos</b><div class="small">JPG, PNG, WebP or GIF · up to 20 photos · 6 MB each</div><input id="productImages" type="file" accept="image/*" multiple></label>
+                <div id="imageGrid" class="image-grid"></div><div id="imageCount" class="small" style="margin-top:7px">0 of 20 photos</div>
+              </div>
+            </div>
+            <div class="editor-actions"><button type="button" class="btn btn-light" id="cancelEdit">Cancel</button><button class="btn btn-primary" id="saveProduct">Save product</button></div>
+          </form>
+        </section>
+
+        <section id="page-categories" class="page hidden">
+          <div class="page-head"><div><h1>Categories</h1><p class="muted">Create product groups for your collection.</p></div></div>
+          <div class="panel" style="max-width:680px"><form id="categoryForm" class="category-add"><input id="categoryName" required maxlength="60" placeholder="New category name"><button class="btn btn-primary">Add category</button></form><div id="categoryList" class="category-list"></div></div>
+        </section>
+
+        <section id="page-backup" class="page hidden">
+          <div class="page-head"><div><h1>Backup & security</h1><p class="muted">Keep a copy of your catalogue and protect your login.</p></div></div>
+          <div class="settings-grid">
+            <div class="panel"><h2>Store backup</h2><p class="muted">Download all products, categories and uploaded photos in one backup file.</p><a class="btn btn-primary" href="/api/admin/backup">Download backup</a><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><h3>Restore a backup</h3><p class="small">Restoring replaces the current catalogue. Your admin password is not changed.</p><input id="restoreFile" type="file" accept=".json,application/json"><button id="restoreBtn" class="btn btn-light" style="margin-top:10px">Restore selected backup</button></div>
+            <div class="panel"><h2>Change password</h2><form id="passwordForm"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" required><label for="newPassword">New password</label><input id="newPassword" type="password" required minlength="8"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" required minlength="8"><button class="btn btn-dark" style="margin-top:18px">Change password</button></form></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </section>
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    let products = [], categories = [], editingImages = [];
+
+    async function api(url, options = {}) {
+      const config = {...options, headers:{'Content-Type':'application/json', ...(options.headers || {})}};
+      const response = await fetch(url, config);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Something went wrong.');
+      return data;
+    }
+    function message(target, text, type='error') {
+      target.innerHTML = text ? `<div class="message ${type}">${escapeHtml(text)}</div>` : '';
+    }
+    function toast(text, isError=false) {
+      const el = $('#toast'); el.textContent = text; el.className = `toast${isError ? ' error' : ''}`;
+      clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function amount(value) { return String(value || '').replace(/[^\d.]/g, ''); }
+    function categoryLabel(id) { return categories.find(c => c.id === id)?.label || id; }
+
+    async function start() {
+      const [{setupRequired}, me] = await Promise.all([api('/api/setup-status'), api('/api/me')]);
+      if (me.authenticated) return openDashboard(me.username);
+      $('#authShell').classList.remove('hidden');
+      $(setupRequired ? '#setupView' : '#loginView').classList.remove('hidden');
+    }
+    async function openDashboard(username) {
+      $('#authShell').classList.add('hidden'); $('#app').classList.remove('hidden'); $('#username').textContent = username;
+      await loadData(); showPage('products');
+    }
+    async function loadData() {
+      [products, categories] = await Promise.all([api('/api/products'), api('/api/categories')]);
+      renderAll();
+    }
+    function renderAll() {
+      $('#statProducts').textContent = products.length; $('#statCategories').textContent = categories.length;
+      $('#statHot').textContent = products.filter(p => p.hotSelling).length;
+      $('#statSuggested').textContent = products.filter(p => p.youMayAlsoLike).length;
+      const selectedFilter = $('#filterCategory').value, selectedProduct = $('#productCategory').value;
+      const opts = categories.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.label)}</option>`).join('');
+      $('#filterCategory').innerHTML = `<option value="">All categories</option>${opts}`;
+      $('#productCategory').innerHTML = `<option value="">Choose category</option>${opts}`;
+      if (categories.some(c => c.id === selectedFilter)) $('#filterCategory').value = selectedFilter;
+      if (categories.some(c => c.id === selectedProduct)) $('#productCategory').value = selectedProduct;
+      renderProducts(); renderCategories();
+    }
+    function renderProducts() {
+      const query = $('#searchProducts').value.trim().toLowerCase(), filter = $('#filterCategory').value;
+      const visible = products.filter(p => (!filter || p.category === filter) && (!query || p.name.toLowerCase().includes(query)));
+      if (!visible.length) { $('#productList').innerHTML = '<div class="empty">No matching products found.</div>'; return; }
+      $('#productList').innerHTML = visible.map(p => {
+        const photo = p.images?.[0];
+        const image = photo ? `<img class="thumb" src="${escapeHtml(photo)}" alt="">` : '<div class="thumb thumb-empty">✦</div>';
+        return `<div class="product-row">${image}<div><div class="product-name">${escapeHtml(p.name)}</div><div class="small">${escapeHtml(categoryLabel(p.category))}</div><div class="badges">${p.hotSelling?'<span class="badge">Hot Selling</span>':''}${p.youMayAlsoLike?'<span class="badge">You May Also Like</span>':''}</div></div><div>${escapeHtml(categoryLabel(p.category))}</div><b>${escapeHtml(p.price)}</b><div class="row-actions"><button class="btn btn-light" data-edit="${escapeHtml(p.id)}">Edit</button><button class="btn btn-danger" data-delete="${escapeHtml(p.id)}">Delete</button></div></div>`;
+      }).join('');
+    }
+    function renderCategories() {
+      $('#categoryList').innerHTML = categories.map(c => {
+        const count = products.filter(p => p.category === c.id).length;
+        return `<div class="category-row"><div><b>${escapeHtml(c.label)}</b><div class="small">${count} product${count===1?'':'s'}</div></div><button class="btn btn-danger" data-delete-category="${escapeHtml(c.id)}" ${count?'disabled title="This category contains products"':''}>Delete</button></div>`;
+      }).join('') || '<div class="empty">No categories yet.</div>';
+    }
+    function showPage(name) {
+      $$('.page').forEach(p => p.classList.add('hidden')); $(`#page-${name}`).classList.remove('hidden');
+      $$('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+      scrollTo({top:0, behavior:'smooth'});
+    }
+    function resetEditor() {
+      $('#productForm').reset(); $('#productId').value=''; editingImages=[]; $('#editorTitle').textContent='Add a product'; renderImages();
+    }
+    function editProduct(id) {
+      const p = products.find(x => x.id === id); if (!p) return;
+      $('#productId').value=p.id; $('#productName').value=p.name; $('#productCategory').value=p.category;
+      $('#productPrice').value=amount(p.price); $('#productOriginalPrice').value=amount(p.originalPrice);
+      $('#productHot').checked=!!p.hotSelling; $('#productSuggested').checked=!!p.youMayAlsoLike;
+      editingImages=[...(p.images||[])]; $('#editorTitle').textContent='Edit product'; renderImages(); showPage('editor');
+    }
+    function renderImages() {
+      $('#imageGrid').innerHTML=editingImages.map((src,i)=>`<div class="image-item"><img src="${escapeHtml(src)}" alt="Product photo ${i+1}"><button type="button" data-remove-image="${i}" aria-label="Remove photo">×</button></div>`).join('');
+      $('#imageCount').textContent=`${editingImages.length} of 20 photos`;
+    }
+    function readFiles(files) {
+      const remaining=20-editingImages.length, selected=[...files].slice(0,remaining);
+      if (files.length>remaining) toast(`Only ${remaining} more photo${remaining===1?'':'s'} can be added.`,true);
+      return Promise.all(selected.map(file => new Promise((resolve,reject)=>{
+        if (file.size > 6*1024*1024) return reject(new Error(`${file.name} is larger than 6 MB.`));
+        const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error(`Could not read ${file.name}.`)); reader.readAsDataURL(file);
+      })));
+    }
+
+    $('#setupForm').addEventListener('submit', async e => {
+      e.preventDefault(); message($('#setupMessage'),'');
+      if ($('#setupPass').value !== $('#setupConfirm').value) return message($('#setupMessage'),'Passwords do not match.');
+      try { const r=await api('/api/setup',{method:'POST',body:JSON.stringify({username:$('#setupUser').value,password:$('#setupPass').value})}); openDashboard(r.username); }
+      catch(err){message($('#setupMessage'),err.message)}
+    });
+    $('#loginForm').addEventListener('submit', async e => {
+      e.preventDefault(); message($('#loginMessage'),'');
+      try { const r=await api('/api/login',{method:'POST',body:JSON.stringify({username:$('#loginUser').value,password:$('#loginPass').value})}); openDashboard(r.username); }
+      catch(err){message($('#loginMessage'),err.message)}
+    });
+    $('#logoutBtn').addEventListener('click', async()=>{await api('/api/logout',{method:'POST'}); location.reload()});
+    $$('.nav-btn').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.page==='editor') resetEditor();showPage(b.dataset.page)}));
+    $$('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
+    $('#addProductTop').addEventListener('click',()=>{resetEditor();showPage('editor')});
+    $('#cancelEdit').addEventListener('click',()=>{resetEditor();showPage('products')});
+    $('#searchProducts').addEventListener('input',renderProducts); $('#filterCategory').addEventListener('change',renderProducts);
+    $('#productList').addEventListener('click',async e=>{
+      const edit=e.target.closest('[data-edit]'), del=e.target.closest('[data-delete]');
+      if(edit) editProduct(edit.dataset.edit);
+      if(del) {
+        const p=products.find(x=>x.id===del.dataset.delete);
+        if(!confirm(`Delete "${p?.name||'this product'}"?`)) return;
+        try{await api(`/api/admin/products/${encodeURIComponent(del.dataset.delete)}`,{method:'DELETE'});await loadData();toast('Product deleted.')}catch(err){toast(err.message,true)}
+      }
+    });
+    $('#productImages').addEventListener('change',async e=>{
+      try{editingImages.push(...await readFiles(e.target.files));renderImages()}catch(err){toast(err.message,true)}
+      e.target.value='';
+    });
+    $('#imageGrid').addEventListener('click',e=>{const b=e.target.closest('[data-remove-image]');if(!b)return;editingImages.splice(Number(b.dataset.removeImage),1);renderImages()});
+    $('#productForm').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const payload={id:$('#productId').value||undefined,name:$('#productName').value,category:$('#productCategory').value,price:$('#productPrice').value,originalPrice:$('#productOriginalPrice').value,hotSelling:$('#productHot').checked,youMayAlsoLike:$('#productSuggested').checked,images:editingImages};
+      const button=$('#saveProduct');button.disabled=true;button.textContent='Saving…';
+      try{await api('/api/admin/products/save',{method:'POST',body:JSON.stringify(payload)});await loadData();resetEditor();showPage('products');toast('Product saved and published.')}
+      catch(err){toast(err.message,true)}finally{button.disabled=false;button.textContent='Save product'}
+    });
+    $('#categoryForm').addEventListener('submit',async e=>{
+      e.preventDefault();try{await api('/api/admin/categories',{method:'POST',body:JSON.stringify({label:$('#categoryName').value})});$('#categoryName').value='';await loadData();toast('Category added.')}catch(err){toast(err.message,true)}
+    });
+    $('#categoryList').addEventListener('click',async e=>{
+      const b=e.target.closest('[data-delete-category]');if(!b||b.disabled)return;if(!confirm('Delete this empty category?'))return;
+      try{await api(`/api/admin/categories/${encodeURIComponent(b.dataset.deleteCategory)}`,{method:'DELETE'});await loadData();toast('Category deleted.')}catch(err){toast(err.message,true)}
+    });
+    $('#restoreBtn').addEventListener('click',async()=>{
+      const file=$('#restoreFile').files[0];if(!file)return toast('Choose a backup file first.',true);
+      if(!confirm('Restore this backup and replace the current catalogue?'))return;
+      try{const backup=JSON.parse(await file.text());const result=await api('/api/admin/restore',{method:'POST',body:JSON.stringify(backup)});await loadData();toast(`Restored ${result.products} products.`)}catch(err){toast(err.message,true)}
+    });
+    $('#passwordForm').addEventListener('submit',async e=>{
+      e.preventDefault();if($('#newPassword').value!==$('#confirmNewPassword').value)return toast('New passwords do not match.',true);
+      try{await api('/api/admin/change-password',{method:'POST',body:JSON.stringify({currentPassword:$('#currentPassword').value,newPassword:$('#newPassword').value})});alert('Password changed. Please log in again.');location.reload()}catch(err){toast(err.message,true)}
+    });
+    start().catch(err=>{document.body.innerHTML=`<div class="auth-shell"><div class="auth-card"><h1>Could not open admin</h1><p>${escapeHtml(err.message)}</p></div></div>`});
+  </script>
+</body>
+</html>
