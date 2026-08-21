@@ -20,8 +20,8 @@
                             @forelse ($salesByStatus as $row)
                                 <tr>
                                     <td>
-                                        @php $status = \App\Enums\OrderStatus::from($row->status); @endphp
-                                        <span class="badge {{ $status->badgeClass() }}">{{ $status->label() }}</span>
+                                        {{-- $row->status is already cast to OrderStatus via Order model --}}
+                                        <span class="badge {{ $row->status->badgeClass() }}">{{ $row->status->label() }}</span>
                                     </td>
                                     <td>{{ number_format($row->total) }}</td>
                                     <td>PKR {{ number_format($row->revenue ?? 0, 0) }}</td>
