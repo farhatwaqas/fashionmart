@@ -1,0 +1,10 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/fashionm/fashionmart/
+    - /bin/cp -R . $DEPLOYPATH
+    - cd $DEPLOYPATH && composer install --no-dev --optimize-autoloader
+    - cd $DEPLOYPATH && php artisan storage:link
+    - cd $DEPLOYPATH && php artisan config:cache
+    - cd $DEPLOYPATH && php artisan route:cache
+    - cd $DEPLOYPATH && php artisan view:cache
