@@ -1,14 +1,5 @@
----
 deployment:
   tasks:
     - export APPPATH=/home/fashionm/fashionmart
     - export PUBLICPATH=/home/fashionm/public_html
-
     - /bin/cp -R $APPPATH/public/. $PUBLICPATH/
-
-    - cd $APPPATH && composer install --no-dev --optimize-autoloader
-
-    - cd $APPPATH && php artisan storage:link
-    - cd $APPPATH && php artisan config:cache
-    - cd $APPPATH && php artisan route:cache
-    - cd $APPPATH && php artisan view:cache
