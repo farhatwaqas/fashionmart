@@ -7,8 +7,8 @@
 ])
 
 @php
-    $pageTitle = $title ?? ($storeName ?? 'Fashion Corner');
-    $pageDescription = $description ?? ($storeTagline ?? 'Discover curated fashion at Fashion Corner.');
+    $pageTitle = $title ?? ($storeName ?? 'Fashion Mart');
+    $pageDescription = $description ?? ($storeTagline ?? 'Discover curated fashion at Fashion Mart.');
     $pageUrl = $url ?? url()->current();
     $pageImage = $image ?? asset('images/placeholder-product.svg');
 @endphp
@@ -22,7 +22,7 @@
 <meta property="og:description" content="{{ Str::limit(strip_tags($pageDescription), 200) }}">
 <meta property="og:url" content="{{ $pageUrl }}">
 <meta property="og:image" content="{{ $pageImage }}">
-<meta property="og:site_name" content="{{ $storeName ?? 'Fashion Corner' }}">
+<meta property="og:site_name" content="{{ $storeName ?? 'Fashion Mart' }}">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $pageTitle }}">
