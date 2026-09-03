@@ -31,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('cartCount', app(CartService::class)->count());
             $view->with('storeName', Setting::getValue('store_name', 'Fashion Corner'));
             $view->with('storeTagline', Setting::getValue('store_tagline', ''));
+            $view->with('storeLogoUrl', Setting::logoUrl());
         });
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SettingController extends Controller
@@ -17,7 +18,7 @@ class SettingController extends Controller
         $keys = [
             'store_name', 'store_tagline', 'store_phone', 'store_email',
             'store_address', 'currency', 'meta_title', 'meta_description',
-            'low_stock_threshold', 'free_shipping_note',
+            'low_stock_threshold', 'free_shipping_note', 'store_logo',
         ];
 
         $settings = [];
@@ -25,7 +26,10 @@ class SettingController extends Controller
             $settings[$key] = Setting::getValue($key);
         }
 
-        return view('admin.settings.edit', compact('settings'));
+        return view('admin.settings.edit', [
+            'settings' => $settings,
+            'logoUrl' => Setting::logoUrl(),
+        ]);
     }
 
     public function update(Request $request): RedirectResponse
@@ -43,10 +47,33 @@ class SettingController extends Controller
             'meta_description' => ['nullable', 'string', 'max:300'],
             'low_stock_threshold' => ['nullable', 'integer', 'min:0'],
             'free_shipping_note' => ['nullable', 'string', 'max:200'],
+            'store_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'remove_store_logo' => ['sometimes', 'boolean'],
         ]);
 
         foreach ($data as $key => $value) {
+            if (in_array($key, ['store_logo', 'remove_store_logo'], true)) {
+                continue;
+            }
+
             Setting::setValue($key, $value);
+        }
+
+        $currentLogo = Setting::getValue('store_logo');
+
+        if ($request->boolean('remove_store_logo') && $currentLogo) {
+            Storage::disk('public')->delete($currentLogo);
+            Setting::setValue('store_logo', null);
+            $currentLogo = null;
+        }
+
+        if ($request->hasFile('store_logo')) {
+            if ($currentLogo) {
+                Storage::disk('public')->delete($currentLogo);
+            }
+
+            $path = $request->file('store_logo')->store('branding', 'public');
+            Setting::setValue('store_logo', $path);
         }
 
         return back()->with('success', 'Settings saved.');

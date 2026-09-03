@@ -62,19 +62,39 @@
         </section>
     @endif
 
-    {{-- Categories --}}
+    {{-- Categories carousel --}}
     @if ($categories->isNotEmpty())
         <section class="fc-section">
             <div class="container">
                 <h2 class="fc-section-title display-font">Shop by Category</h2>
                 <p class="fc-section-subtitle">Explore our curated collections</p>
-                <div class="fc-category-grid">
-                    @foreach ($categories as $category)
-                        <a href="{{ route('shop.category', $category) }}" class="fc-category-card">
-                            <div class="fc-category-name">{{ $category->name }}</div>
-                            <div class="fc-category-count">{{ $category->products_count }} items</div>
-                        </a>
-                    @endforeach
+
+                <div class="fc-category-carousel" data-category-carousel>
+                    @if ($categories->count() > 3)
+                        <button type="button" class="fc-category-nav fc-category-nav-prev" data-category-prev aria-label="Previous categories">
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="fc-category-nav fc-category-nav-next" data-category-next aria-label="Next categories">
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    @endif
+
+                    <div class="fc-category-track" data-category-track>
+                        @foreach ($categories as $category)
+                            <a href="{{ route('shop.category', $category) }}" class="fc-category-item">
+                                <span class="fc-category-avatar">
+                                    <img
+                                        src="{{ $category->imageUrl() }}"
+                                        alt="{{ $category->name }}"
+                                        loading="lazy"
+                                        width="160"
+                                        height="160"
+                                    >
+                                </span>
+                                <span class="fc-category-label">{{ $category->name }}</span>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </section>

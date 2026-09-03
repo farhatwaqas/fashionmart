@@ -26,7 +26,12 @@
     <header class="fc-header">
         <nav class="navbar navbar-expand-lg py-3">
             <div class="container">
-                <a class="fc-brand navbar-brand me-lg-4" href="{{ route('home') }}">{{ $storeName }}</a>
+                <a class="fc-brand navbar-brand me-lg-4" href="{{ route('home') }}">
+                    @if (!empty($storeLogoUrl))
+                        <img src="{{ $storeLogoUrl }}" alt="{{ $storeName }}" class="fc-brand-logo">
+                    @endif
+                    <span class="fc-brand-text">{{ $storeName }}</span>
+                </a>
 
                 <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#fcNav" aria-controls="fcNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -65,9 +70,14 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="fc-footer-brand">{{ $storeName }}</div>
+                    <div class="fc-footer-brand d-flex align-items-center gap-2">
+                        @if (!empty($storeLogoUrl))
+                            <img src="{{ $storeLogoUrl }}" alt="{{ $storeName }}" class="fc-footer-logo">
+                        @endif
+                        <span>{{ $storeName }}</span>
+                    </div>
                     @if (!empty($storeTagline))
-                        <p class="small mb-0">{{ $storeTagline }}</p>
+                        <p class="small mb-0 mt-2">{{ $storeTagline }}</p>
                     @endif
                 </div>
                 <div class="col-md-4">

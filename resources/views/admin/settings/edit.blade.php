@@ -3,7 +3,7 @@
 @section('title', 'Settings')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.settings.update') }}">
+    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -12,6 +12,24 @@
                 <div class="admin-card mb-4">
                     <div class="admin-card-header">Store Information</div>
                     <div class="admin-card-body">
+                        <div class="mb-4">
+                            <label for="store_logo" class="form-label">Store Logo</label>
+                            <p class="text-muted small mb-3">Shown beside the brand title in the header and footer. PNG, JPG, WEBP or SVG — max 2 MB.</p>
+
+                            @if (!empty($logoUrl))
+                                <div class="d-flex align-items-center gap-3 mb-3 p-3 border rounded bg-light">
+                                    <img src="{{ $logoUrl }}" alt="Current logo" style="height: 48px; width: auto; max-width: 96px; object-fit: contain;">
+                                    <div class="form-check mb-0">
+                                        <input class="form-check-input" type="checkbox" name="remove_store_logo" value="1" id="remove_store_logo" @checked(old('remove_store_logo'))>
+                                        <label class="form-check-label" for="remove_store_logo">Remove current logo</label>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <input type="file" class="form-control @error('store_logo') is-invalid @enderror" id="store_logo" name="store_logo" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+                            @error('store_logo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
                         <div class="mb-3">
                             <label for="store_name" class="form-label">Store Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('store_name') is-invalid @enderror" id="store_name" name="store_name" value="{{ old('store_name', $settings['store_name']) }}" required>

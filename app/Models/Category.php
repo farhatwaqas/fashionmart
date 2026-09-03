@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Category extends Model
@@ -70,5 +71,24 @@ class Category extends Model
     public function canBeDeleted(): bool
     {
         return ! $this->products()->exists();
+    }
+
+    public function imageUrl(): string
+    {
+        if ($this->image) {
+            return Storage::disk('public')->url($this->image);
+        }
+
+        if ($this->relationLoaded('products') && $this->products->isNotEmpty()) {
+            return $this->products->first()->coverUrl();
+        }
+
+        $fallbackProduct = $this->products()
+            ->active()
+            ->with(['coverImage', 'images'])
+            ->latest()
+            ->first();
+
+        return $fallbackProduct?->coverUrl() ?? asset('images/placeholder-category.svg');
     }
 }
