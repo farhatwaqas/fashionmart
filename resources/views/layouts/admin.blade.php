@@ -22,6 +22,9 @@
     <div class="admin-wrapper">
         <aside class="admin-sidebar">
             <div class="admin-sidebar-brand">
+                @if (!empty($storeLogoUrl))
+                    <img src="{{ $storeLogoUrl }}" alt="{{ $storeName }}" class="admin-sidebar-logo mb-1">
+                @endif
                 {{ $storeName }}
                 <small>Admin Panel</small>
             </div>

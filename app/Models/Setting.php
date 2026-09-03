@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class Setting extends Model
 {
@@ -35,5 +36,16 @@ class Setting extends Model
     public static function flushCache(): void
     {
         Cache::forget('app_settings');
+    }
+
+    public static function logoUrl(): ?string
+    {
+        $path = static::getValue('store_logo');
+
+        if (! $path) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($path);
     }
 }

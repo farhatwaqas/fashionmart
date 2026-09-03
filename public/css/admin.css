@@ -47,6 +47,14 @@ body.admin-body {
     color: #fff;
 }
 
+.admin-sidebar-logo {
+    display: block;
+    height: 2rem;
+    width: auto;
+    max-width: 3rem;
+    object-fit: contain;
+}
+
 .admin-sidebar-brand small {
     display: block;
     font-family: var(--admin-font);
